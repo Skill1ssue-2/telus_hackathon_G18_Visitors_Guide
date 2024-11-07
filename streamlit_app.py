@@ -2,6 +2,7 @@ import streamlit as st
 from visitor_guide import TorontoVisitorGuide
 import matplotlib.pyplot as plt
 import plotly.express as px  # For interactive charts
+import pandas as pd
 
 def create_app():
     st.title("Toronto Taylor Swift Concert Visitor Guide")
@@ -69,10 +70,10 @@ def create_app():
         with col1:
             st.write("**Peak Traffic Hours to Avoid:**")
             peak_hours = {
-                "ON1": "5:00 PM (17:00)",
-                "ON2": "4:00 PM (16:00)",
-                "ON3": "1:00 PM (13:00)",
-                "ON4": "12:00 PM (12:00)"
+                "ON1": "3:00 PM (15:00)",
+                "ON2": "2:00 PM (14:00)",
+                "ON3": "11:00 AM (11:00)",
+                "ON4": "10:00 AM (10:00)"
             }
             
             selected_region = origin_region[:3]  # Get ON1, ON2, etc.

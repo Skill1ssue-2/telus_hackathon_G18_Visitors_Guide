@@ -31,12 +31,12 @@ class TorontoVisitorGuide:
         return self.model.predict(example_data)[0]
 
     def get_arrival_recommendation(self, origin_region):
-        # Real data-based arrival patterns
+        # Real data-based arrival patterns (adjusted for 7 PM concert)
         arrival_patterns = {
-            'ON1': {'peak_hour': 17, 'free_hours': 4},
-            'ON2': {'peak_hour': 16, 'free_hours': 5},
-            'ON3': {'peak_hour': 13, 'free_hours': 8},
-            'ON4': {'peak_hour': 12, 'free_hours': 9}
+            'ON1': {'peak_hour': 15, 'free_hours': 4},  # Was 17:00, now 15:00 (3 PM)
+            'ON2': {'peak_hour': 14, 'free_hours': 5},  # Was 16:00, now 14:00 (2 PM)
+            'ON3': {'peak_hour': 11, 'free_hours': 8},  # Was 13:00, now 11:00 (11 AM)
+            'ON4': {'peak_hour': 10, 'free_hours': 9},  # Was 12:00, now 10:00 (10 AM)
         }
         
         pattern = arrival_patterns.get(origin_region)
