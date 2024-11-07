@@ -1,5 +1,7 @@
 import streamlit as st
 from visitor_guide import TorontoVisitorGuide
+import matplotlib.pyplot as plt
+import plotly.express as px  # For interactive charts
 
 def create_app():
     st.title("Toronto Taylor Swift Concert Visitor Guide")
@@ -22,6 +24,13 @@ def create_app():
         "Where are you coming from?",
         list(region_data.keys())
     )
+
+    arrival_info = guide.get_arrival_recommendation(origin_region[:3])
+    
+    transport_method = st.sidebar.selectbox(
+        "How are you planning to get to Toronto?",
+        ["Car", "Subway", "Other"]  # Removed Bus option
+    )
     
     # Get default hours based on selected region
     default_hours = region_data[origin_region]
@@ -39,13 +48,54 @@ def create_app():
     # Main content
     st.header("Your Personalized Guide")
     
-    # Arrival recommendations
+    # Arrival recommendations with highlighted time
     st.subheader("📅 Arrival Planning")
-    arrival_info = guide.get_arrival_recommendation(origin_region[:3])
     if arrival_info['recommended_arrival_time']:
-        st.write(f"**Recommended Arrival Time:** {arrival_info['recommended_arrival_time'].strftime('%I:%M %p')}")
+        col1, col2 = st.columns([1.5, 3])
+        with col1:
+            st.write("**Recommended Arrival Time:**")
+        with col2:
+            st.markdown(f"<span style='background-color: #ffeb3b; padding: 2px 8px; border-radius: 4px; font-weight: bold; color: black;'>{arrival_info['recommended_arrival_time'].strftime('%I:%M %p')}</span>", unsafe_allow_html=True)
+        
         st.write(f"**Why this time?** {arrival_info['reason']}")
-    
+
+    # If subway is selected, show additional information
+    if transport_method == "Subway":
+        st.subheader("🚇 Subway Traffic Information")
+        
+        # Create two columns for better layout
+        col1, col2 = st.columns([3,2])
+        
+        with col1:
+            st.write("**Peak Traffic Hours to Avoid:**")
+            peak_hours = {
+                "ON1": "5:00 PM (17:00)",
+                "ON2": "4:00 PM (16:00)",
+                "ON3": "1:00 PM (13:00)",
+                "ON4": "12:00 PM (12:00)"
+            }
+            
+            selected_region = origin_region[:3]  # Get ON1, ON2, etc.
+            peak_time = peak_hours.get(selected_region, "Data not available")
+            
+            st.warning(f"⚠️ Highest subway traffic from your region is typically around {peak_time}")
+            
+            st.write("""
+            **Tips for Subway Travel:**
+            - Consider traveling 30-60 minutes before the peak time
+            - Have your transit fare ready before entering the station
+            - Follow TTC updates for service changes
+            - Consider using alternate stations if your nearest one is busy
+            """)
+        
+        with col2:
+            st.info(f"""
+            **Your Region ({selected_region}):**
+            - Peak Traffic: {peak_time}
+            - Recommended Arrival: {int(peak_hours[selected_region].split(':')[0]) - 1}:00
+            - Average Travel Time to Core: ~{arrival_info['free_hours']} hours
+            """)
+
     # Tourist suggestions
     st.subheader("🎯 Suggested Itinerary")
     suggestions = guide.get_tourist_suggestions(free_time)

@@ -123,6 +123,36 @@ class TorontoVisitorGuide:
         else:
             return suggestions['long']
 
+    def get_subway_recommendations(self, origin_region):
+        subway_data = {
+            'ON1': {
+                'peak_hour': 17,
+                'recommended_stations': ['Station A', 'Station B'],
+                'alternate_routes': 'Consider using Line 2 instead of Line 1 during peak hours'
+            },
+            'ON2': {
+                'peak_hour': 16,
+                'recommended_stations': ['Station C', 'Station D'],
+                'alternate_routes': 'Multiple subway lines available, check TTC trip planner'
+            },
+            'ON3': {
+                'peak_hour': 13,
+                'recommended_stations': ['Station E', 'Station F'],
+                'alternate_routes': 'Consider GO Transit as an alternative during peak hours'
+            },
+            'ON4': {
+                'peak_hour': 12,
+                'recommended_stations': ['Station G', 'Station H'],
+                'alternate_routes': 'Multiple entry points to subway system available'
+            }
+        }
+        
+        return subway_data.get(origin_region[:3], {
+            'peak_hour': None,
+            'recommended_stations': [],
+            'alternate_routes': 'Please check TTC website for detailed information'
+        })
+
 # Example usage
 def main():
     guide = TorontoVisitorGuide()
